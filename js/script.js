@@ -229,6 +229,18 @@ function openEnvelope() {
 }
 
 // ================= LOVE BUTTON RUNAWAY =================
+let noHoverCount = 0;
+let noClickCount = 0;
+const noTexts = [
+  "No",
+  "Are you sure?",
+  "Think again",
+  "Please?",
+  "Pretty please?",
+  "Don't break my heart",
+  "Okay... Yes?"
+];
+
 function runAwayNo() {
   const btn = document.getElementById("loveNo");
   if (!btn) return;
@@ -236,6 +248,11 @@ function runAwayNo() {
   const padding = 8;
   const container = btn.parentElement;
   if (!container) return;
+
+  noHoverCount += 1;
+
+  const textIndex = Math.min(noTexts.length - 1, Math.floor(noHoverCount / 2));
+  btn.textContent = noTexts[textIndex];
 
   const maxX = Math.max(0, container.clientWidth - btn.offsetWidth - padding);
   const maxY = Math.max(0, container.clientHeight - btn.offsetHeight - padding);
@@ -249,7 +266,30 @@ function runAwayNo() {
   btn.style.right = "auto";
   btn.style.bottom = "auto";
   btn.style.transform = "none";
+
+  if (noHoverCount >= 8) {
+    btn.textContent = "Yes";
+    btn.classList.add("love-yes");
+    btn.classList.remove("love-no");
+    btn.id = "loveYesFromNo";
+    btn.onclick = () => goToJoy();
+    btn.onmouseenter = null;
+  }
 }
+
+// Make "No" react on click too
+document.addEventListener("click", (e) => {
+  const btn = document.getElementById("loveNo");
+  if (!btn) return;
+  if (e.target !== btn) return;
+
+  noClickCount += 1;
+  runAwayNo();
+
+  if (noClickCount >= 3 && noHoverCount < 8) {
+    btn.textContent = "You're too cute to say no";
+  }
+});
 
 
 // ================= NIGHT THEME =================
