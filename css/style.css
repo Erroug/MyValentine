@@ -18,6 +18,10 @@ body {
   min-height: 100vh;
 }
 
+html:not([data-access-checked="true"]) body {
+  visibility: hidden;
+}
+
 /* ===== Canvas Sky ===== */
 #sky {
   position: fixed;

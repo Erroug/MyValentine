@@ -1,183 +1,6 @@
-// // ================= THEME BY DATE =================
-// function getThemeByDate() {
-//   const today = new Date();
-//   today.setHours(0,0,0,0);
-
-//   const day1 = new Date("2026-02-14"); // Night sky
-//   const day2 = new Date("2026-02-15"); // Sunrise petals
-
-//   if (today.getTime() === day2.getTime()) return "sunrise";
-//   return "night";
-// }
-
-// // ================= DATE ACCESS CONTROL =================
-// function checkAccess(unlockDate) {
-//   const today = new Date();
-//   const [year, month, day] = unlockDate.split('-').map(Number);
-//   const allowedDate = new Date(year, month - 1, day);
-
-//   today.setHours(0, 0, 0, 0);
-//   allowedDate.setHours(0, 0, 0, 0);
-
-//   const theme = getThemeByDate();
-
-//   // ===== Apply Theme =====
-//   if (theme === "night") {
-//     createSky();
-//     createHearts();
-//   }
-
-//   if (theme === "sunrise") {
-//     applySunriseTheme();
-//     startPetals();
-//   }
-
-//   // ===== Lock Page if date not reached =====
-//   if (today < allowedDate) {
-//     const container = document.querySelector(".container");
-//     if (container) container.remove();
-
-//     const lockDiv = document.createElement("div");
-//     lockDiv.classList.add("container");
-//     lockDiv.innerHTML = `
-//       <h1>⏳ Not Yet My Love ❤️</h1>
-//       <p>This surprise will unlock on</p>
-//       <h2>${allowedDate.toDateString()}</h2>
-//       <p>Come back Later Baby 😘</p>
-//     `;
-//     document.body.appendChild(lockDiv);
-//     return false;
-//   }
-// }
-
-// // ================= DAY 1 : REAL NIGHT SKY (Canvas, Zoomed Out) =================
-// function createSky() {
-//   const canvas = document.createElement("canvas");
-//   canvas.id = "sky";
-//   document.body.appendChild(canvas);
-
-//   const ctx = canvas.getContext("2d");
-//   canvas.width = window.innerWidth;
-//   canvas.height = window.innerHeight;
-
-//   let stars = [];
-//   const STAR_COUNT = 300;
-
-//   for (let i = 0; i < STAR_COUNT; i++) {
-//     stars.push({
-//       x: Math.random() * canvas.width,
-//       y: Math.random() * canvas.height,
-//       radius: Math.random() * 0.8 + 0.2, // smaller stars for zoom out
-//       alpha: Math.random(),
-//       twinkleSpeed: Math.random() * 0.015 + 0.002, // slower twinkle
-//       shooting: false,
-//       shootSpeed: Math.random() * 2 + 1 // slower shooting
-//     });
-//   }
-
-//   function drawStars() {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-//     stars.forEach(star => {
-//       star.alpha += star.twinkleSpeed;
-//       if (star.alpha >= 1 || star.alpha <= 0) {
-//         star.twinkleSpeed = -star.twinkleSpeed;
-//       }
-
-//       ctx.beginPath();
-//       ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-//       ctx.fillStyle = `rgba(255,255,255,${star.alpha})`;
-//       ctx.fill();
-
-//       if (star.shooting) {
-//         ctx.beginPath();
-//         ctx.moveTo(star.x, star.y);
-//         ctx.lineTo(star.x - 60, star.y + 60); // smaller line for zoomed out
-//         ctx.strokeStyle = `rgba(255,255,255,0.7)`; // less bright shooting star
-//         ctx.lineWidth = 1.5;
-//         ctx.stroke();
-
-//         star.x += star.shootSpeed;
-//         star.y -= star.shootSpeed;
-
-//         if (star.x > canvas.width || star.y < 0) {
-//           resetStar(star);
-//         }
-//       }
-//     });
-
-//     requestAnimationFrame(drawStars);
-//   }
-
-//   function resetStar(star) {
-//     star.x = Math.random() * canvas.width;
-//     star.y = Math.random() * canvas.height;
-//     star.shooting = false;
-//   }
-
-//   // shooting star interval
-//   setInterval(() => {
-//     const index = Math.floor(Math.random() * stars.length);
-//     stars[index].shooting = true;
-//   }, 4000); // less frequent shooting
-
-//   drawStars();
-
-//   window.addEventListener('resize', () => {
-//     canvas.width = window.innerWidth;
-//     canvas.height = window.innerHeight;
-//   });
-// }
-
-// // ================= HEART STARS =================
-// function createHearts() {
-//   const totalHearts = 40;
-
-//   for (let i = 0; i < totalHearts; i++) {
-//     const heart = document.createElement("div");
-//     heart.classList.add("heart");
-
-//     heart.style.top = Math.random() * 100 + "vh";
-//     heart.style.left = Math.random() * 100 + "vw";
-
-//     const size = Math.random() * 5 + 4; // smaller hearts
-//     heart.style.width = size + "px";
-//     heart.style.height = size + "px";
-
-//     heart.style.animationDelay = Math.random() * 3 + "s";
-
-//     document.body.appendChild(heart);
-//   }
-// }
-
-// // ================= DAY 2 : SUNRISE =================
-// function applySunriseTheme() {
-//   document.body.style.background = "linear-gradient(to top, #ff9a9e, #fad0c4)";
-//   document.body.style.color = "#4a2c2a";
-//   document.body.classList.add("sunrise-theme");
-// }
-
-// // ================= DAY 2 : FALLING PETALS =================
-// function startPetals() {
-//   setInterval(() => {
-//     const petal = document.createElement("div");
-//     petal.className = "petal";
-
-//     petal.style.left = Math.random() * 100 + "vw";
-//     petal.style.animationDuration = (Math.random() * 3 + 4) + "s";
-
-//     document.body.appendChild(petal);
-
-//     setTimeout(() => petal.remove(), 7000);
-//   }, 300);
-// }
-
-
-
-
-
 //// ================= ACCESS CONTROL =================
 function checkAccess(unlockDate, theme = "night") {
+  const root = document.documentElement;
   const today = new Date();
   today.setHours(0,0,0,0);
 
@@ -186,6 +9,18 @@ function checkAccess(unlockDate, theme = "night") {
   allowedDate.setHours(0,0,0,0);
 
   if (today < allowedDate) {
+    const waitingCard = getNextWaitingCard();
+    document.body.classList.remove(
+      "theme-rose",
+      "theme-propose",
+      "theme-choco",
+      "theme-teddy",
+      "theme-promise",
+      "theme-hug",
+      "theme-kiss",
+      "theme-valentine",
+      "waiting-theme"
+    );
     document.body.classList.add("waiting-theme");
     document.body.innerHTML = `
       <div class="waiting-bg">
@@ -200,25 +35,85 @@ function checkAccess(unlockDate, theme = "night") {
       </div>
       <div class="container waiting-card">
         <div class="pulse-heart"></div>
-        <h1>⏳ Not Yet My Love ❤️</h1>
-        <p>This surprise unlocks on</p>
+        <h1>${waitingCard.title}</h1>
+        <p>${waitingCard.subtitle}</p>
         <h2>${allowedDate.toDateString()}</h2>
-        <p>Counting the moments until I can show you how much I love you.</p>
+        <p>${waitingCard.message}</p>
         <div class="photo-row">
-          <img src="img/us-1.jpg" alt="Our memory 1">
-          <img src="img/us-2.jpg" alt="Our memory 2">
-          <img src="img/us-3.jpg" alt="Our memory 3">
+          ${waitingCard.photos.map(photo => `<img src="${photo.src}" alt="${photo.alt}">`).join("")}
         </div>
-        <p class="photo-note">Replace these photos with your favorite moments.</p>
+        ${waitingCard.note ? `<p class="photo-note">${waitingCard.note}</p>` : ""}
       </div>
     `;
     createWaitingStars();
+    root.dataset.accessChecked = "true";
     return;
   }
 
   applyTheme(theme);
+  root.dataset.accessChecked = "true";
 }
 
+// ================= WAITING CARD ROTATION =================
+const waitingCards = [
+  {
+    title: "Not Yet My Love😚",
+    subtitle: "This surprise unlocks on",
+    message: "Thoda sa baby ji, itta 🤌 sa baccha .",
+    note: "I love you dheeeerrrr saara mera baby muah💋💏",
+    photos: [
+      { src: "assets/images/distanceDosentMatter.jpg", alt: "Our memory" },
+      { src: "assets/images/Hand.jpg", alt: "Our memory" },
+      { src: "assets/images/together.jpg", alt: "Our memory" }
+    ]
+  },
+  {
+    title: "Almost There",
+    subtitle: "Your surprise opens on",
+    message: "Duddu mera muah thoda sa ruk jaao 🥰,</br> Aao tanik baate ho jaaye time beet jayega.❤️",
+    note: "Dheer saari kisss muah 💋😚",
+    photos: [
+      { src: "assets/images/Snapchat-1804088865.jpg", alt: "Our memory" },
+      { src: "assets/images/IMG20251223100015.jpg", alt: "Our memory" },
+      { src: "assets/images/IMG20251223173606.jpg", alt: "Our memory" }
+    ]
+  },
+  {
+    title: "A Tiny Wait",
+    subtitle: "The magic begins on",
+    message: "Every day with you is special, even the waiting ones.",
+    note: "Mera dudduu mera dudduu muah muah muah 💋💋💋",
+    photos: [
+      { src: "assets/images/IMG20251223094245.jpg", alt: "Our memory" },
+      { src: "assets/images/IMG20251223093735.jpg", alt: "Our memory" },
+      { src: "assets/images/IMG20251223103058.jpg", alt: "Our memory" }
+    ]
+  },
+  {
+    title: "Secret Surprise",
+    subtitle: "Unlock date",
+    message: "Baby ji noiii abbi noii baccha 😚😚😚.",
+    note: "Meri nakchadhi khi ki ruko tanik.",
+    photos: [
+      { src: "assets/images/IMG20250603181606.jpg", alt: "Our memory" },
+      { src: "assets/images/WhatsApp Image 2025-03-29 at 09.49.48_e41fc3a3.jpg", alt: "Our memory" },
+      { src: "assets/images/IMG20251223202138.jpg", alt: "Our memory" }
+    ]
+  }
+];
+
+function getNextWaitingCard() {
+  const key = "waitingCardIndex";
+  try {
+    const current = Number(localStorage.getItem(key) || "0");
+    const next = Number.isNaN(current) ? 0 : current;
+    const card = waitingCards[next % waitingCards.length];
+    localStorage.setItem(key, String((next + 1) % waitingCards.length));
+    return card;
+  } catch (err) {
+    return waitingCards[Math.floor(Math.random() * waitingCards.length)];
+  }
+}
 // ================= WAITING THEME =================
 function createWaitingStars() {
   const layer = document.createElement("div");
@@ -339,11 +234,11 @@ function runAwayNo() {
   if (!btn) return;
 
   const padding = 8;
-  const card = document.querySelector(".love-card");
-  if (!card) return;
+  const container = btn.parentElement;
+  if (!container) return;
 
-  const maxX = Math.max(0, card.clientWidth - btn.offsetWidth - padding);
-  const maxY = Math.max(0, card.clientHeight - btn.offsetHeight - padding);
+  const maxX = Math.max(0, container.clientWidth - btn.offsetWidth - padding);
+  const maxY = Math.max(0, container.clientHeight - btn.offsetHeight - padding);
 
   const x = Math.max(padding, Math.floor(Math.random() * (maxX + 1)));
   const y = Math.max(padding, Math.floor(Math.random() * (maxY + 1)));
@@ -449,4 +344,7 @@ function goToJoy() {
   // user interaction → allows autoplay audio on joy page
   window.location.href = "joy.html";
 }
+
+
+
 
