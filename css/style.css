@@ -16,6 +16,61 @@ body {
   color: white;
   overflow: hidden;
   min-height: 100vh;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* ===== Rose Bloom (Rose Day) ===== */
+.rose-bloom {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translate(-50%, -50%) scale(0.2);
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  z-index: 2;
+  filter: drop-shadow(0 25px 60px rgba(255, 90, 140, 0.45));
+  animation: none;
+}
+
+.rose-bloom::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0 55%, transparent 70%);
+  animation: innerBloom 2.2s ease-out 0.3s forwards;
+  transform: scale(0.2);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes roseBloom {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1) rotate(-15deg);
+    opacity: 0;
+  }
+  60% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes innerBloom {
+  0% {
+    transform: scale(0.1) rotate(10deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 html:not([data-access-checked="true"]) body {
@@ -686,6 +741,7 @@ button:hover {
 
 .theme-rose {
   background: radial-gradient(900px 600px at 10% 10%, #ffb3c7 0%, #ff6f9e 35%, #3a0b1c 100%);
+  background-color: #3a0b1c;
   color: #fff0f6;
 }
 
@@ -707,6 +763,7 @@ button:hover {
 
 .theme-propose {
   background: radial-gradient(900px 600px at 80% 20%, #ffd1dc 0%, #ff84b3 45%, #2a0a1a 100%);
+  background-color: #2a0a1a;
   color: #fff3f8;
 }
 
@@ -738,6 +795,7 @@ button:hover {
 
 .theme-choco {
   background: radial-gradient(900px 600px at 20% 20%, #ffd6a1 0%, #b5654d 45%, #2b150f 100%);
+  background-color: #2b150f;
   color: #fff0e6;
 }
 
@@ -758,6 +816,7 @@ button:hover {
 
 .theme-teddy {
   background: radial-gradient(900px 600px at 70% 20%, #ffe8c7 0%, #f2b48f 45%, #5a2d1d 100%);
+  background-color: #5a2d1d;
   color: #fff7ef;
 }
 
@@ -778,6 +837,7 @@ button:hover {
 
 .theme-promise {
   background: radial-gradient(900px 600px at 30% 15%, #c9f0ff 0%, #7fb0ff 45%, #0e1a3a 100%);
+  background-color: #0e1a3a;
   color: #eef7ff;
 }
 
@@ -798,6 +858,7 @@ button:hover {
 
 .theme-hug {
   background: radial-gradient(900px 600px at 15% 20%, #ffd6a5 0%, #ff9f68 45%, #532c1a 100%);
+  background-color: #532c1a;
   color: #fff3e8;
 }
 
@@ -819,6 +880,7 @@ button:hover {
 
 .theme-kiss {
   background: radial-gradient(900px 600px at 75% 15%, #ffb3b3 0%, #ff5f7a 45%, #2a0b12 100%);
+  background-color: #2a0b12;
   color: #fff1f3;
 }
 
@@ -853,6 +915,7 @@ button:hover {
 
 .theme-valentine {
   background: radial-gradient(900px 600px at 50% 10%, #ffb6c9 0%, #ff5f8f 40%, #2a0616 100%);
+  background-color: #2a0616;
   color: #fff2f7;
 }
 
