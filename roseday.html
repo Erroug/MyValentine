@@ -79,13 +79,13 @@
       gap: 2px;
       cursor: pointer;
       box-shadow: 0 10px 30px rgba(255, 120, 170, 0.35);
-      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      transition: box-shadow 0.25s ease, background 0.25s ease;
+      animation: rosePulse 1.4s ease-in-out infinite;
     }
 
     .rose-button .rose-emoji {
       font-size: 48px;
       display: inline-block;
-      transition: transform 0.25s ease;
     }
 
     .rose-button .rose-text {
@@ -101,22 +101,14 @@
       inset: -10px;
       border-radius: 50%;
       border: 2px solid rgba(255, 140, 180, 0.6);
-      opacity: 0;
-      transform: scale(0.8);
+      opacity: 0.8;
+      transform: scale(0.7);
+      animation: roseBloom 1.2s ease-out infinite;
     }
 
     .rose-button:hover {
       box-shadow: 0 0 22px rgba(255, 140, 180, 0.9), 0 0 50px rgba(255, 120, 170, 0.6);
       background: rgba(255, 220, 235, 0.35);
-      animation: rosePulse 1.4s ease-in-out infinite;
-    }
-
-    .rose-button:hover .rose-emoji {
-      animation: roseSpin 1.2s linear infinite;
-    }
-
-    .rose-button:hover::after {
-      animation: roseBloom 1.2s ease-out infinite;
     }
 
     @keyframes roseSpin {
@@ -144,7 +136,7 @@
   <div class="dummy-photo" style="--r:4deg"><img src="assets/images/rose day/IMG20250930191419.jpg"></div>
   <div class="dummy-photo" style="--r:-8deg"><img src="assets/images/rose day/IMG20250930191857.jpg"></div>
   <div class="dummy-photo" style="--r:6deg"><img src="assets/images/rose day/IMG20251017193818.jpg"></div>
-  <div class="dummy-photo" style="--r:-4deg"><img src="assets/images/rose day/IMG20251022001003.jpg assets/images/rose day/IMG20251017193818.jpg"></div>
+  <div class="dummy-photo" style="--r:-4deg"><img src="assets/images/rose day/IMG20251022001003.jpg"></div>
   <div class="dummy-photo" style="--r:7deg"><img src="assets/images/rose day/IMG20251114094334.jpg"></div>
   <div class="dummy-photo" style="--r:-5deg"><img src="assets/images/rose day/IMG20251114094535.jpg"></div>
   <div class="dummy-photo" style="--r:3deg"><img src="assets/images/rose day/IMG20251114094554.jpg"></div>
@@ -162,7 +154,7 @@
 
 <button class="rose-button" onclick="location.href='rose-notes.html'" aria-label="Open rose notes">
   <span class="rose-emoji">&#x1F339;</span>
-  <span class="rose-text">Click me</span>
+  <!-- <span class="rose-text">Click me</span> -->
 </button>
 
 <!-- <div class="container main-content love-layout">
@@ -176,5 +168,3 @@
 <script src="js/script.js"></script>
 </body>
 </html>
-
-
