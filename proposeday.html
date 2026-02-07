@@ -1,15 +1,876 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Propose Day</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    body.propose-page {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      perspective: 1800px;
+    }
+
+    .card-stage {
+      position: relative;
+      width: min(90vw, 360px);
+      height: min(78vh, 520px);
+      display: grid;
+      place-items: center;
+      z-index: 6;
+      --card-duration: 920ms;
+      --page-duration: 920ms;
+      cursor: pointer;
+    }
+
+    .proposal-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition: transform var(--card-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
+      cursor: pointer;
+      border-radius: 0;
+      will-change: transform;
+      touch-action: manipulation;
+      transform: translateZ(0);
+    }
+
+    .proposal-card.open {
+      transform: rotateY(-179.5deg);
+      cursor: pointer;
+    }
+
+    .card-cover,
+    .card-inside {
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .card-cover * {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .card-cover {
+      transform: rotateY(0deg);
+      background: linear-gradient(180deg, #fffefe 0%, #fff6fa 100%);
+      border: 1px solid rgba(230, 202, 214, 0.95);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 22px 16px 20px;
+      color: #7b2d4a;
+      transition: opacity 180ms linear;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    .page-number {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      margin: 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #7e2145;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(208, 130, 160, 0.7);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .proposal-card.open .card-cover {
+      transition-delay: calc(var(--card-duration) - 200ms);
+      opacity: 0;
+    }
+
+    .proposal-card:not(.open) .card-cover {
+      transition-delay: 0ms;
+      opacity: 1;
+    }
+
+    .cover-oval {
+      width: min(100%, 260px);
+      aspect-ratio: 1.45 / 1;
+      border-radius: 999px;
+      margin-top: 2px;
+      background: transparent;
+      box-shadow: 0 10px 18px rgba(89, 56, 18, 0.12);
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+      transform: translateZ(1px);
+      overflow: hidden;
+    }
+
+    .cover-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+      filter: saturate(1.05) contrast(1.05);
+    }
+
+    .cover-center-photo {
+      width: calc(100% - 52px);
+      height: calc(100% - 52px);
+      border-radius: 999px;
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(0.08) contrast(1.05);
+      position: relative;
+      z-index: 1;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .cover-copy {
+      margin-top: 16px;
+      text-align: center;
+      display: grid;
+      gap: 4px;
+    }
+
+    .cover-icons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      color: #e24a7b;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .cover-title {
+      margin: 0;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #8a4360;
+    }
+
+    .cover-script {
+      margin: 0;
+      font-family: "Segoe Script", "Brush Script MT", cursive;
+      font-size: 2.1rem;
+      line-height: 0.95;
+      color: #7e2145;
+    }
+
+    .card-inside {
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      padding: 24px;
+      color: #472032;
+      background: linear-gradient(145deg, #fff7fb 0%, #ffe6f0 100%);
+      border: 1px solid rgba(230, 170, 190, 0.7);
+    }
+
+    .card-inside h2 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .card-inside p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .card-inside-content {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .left-page {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background: linear-gradient(165deg, #fff9fc 0%, #ffeef5 100%);
+      border: 1px solid rgba(230, 170, 190, 0.65);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 38px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 10px;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .card-stage[data-step="1"] .left-page-first,
+    .card-stage[data-step="3"] .left-page-first {
+      display: flex;
+    }
+
+    .card-stage[data-step="2"] .left-page-second {
+      display: flex;
+    }
+
+    .left-page-tag {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #7e2145;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(208, 130, 160, 0.6);
+      border-radius: 999px;
+      padding: 3px 7px;
+      line-height: 1;
+    }
+
+    .left-page h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.2;
+      color: #6c2441;
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    .left-page p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .card-inside-content .mini-hearts {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    .card-backdrop {
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      background: linear-gradient(145deg, rgba(255, 247, 251, 0.95), rgba(255, 230, 240, 0.95));
+      border: 1px solid rgba(230, 170, 190, 0.7);
+      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.28);
+      z-index: -1;
+      transform: translateX(2px);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 14px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 220ms ease;
+    }
+
+    .card-stage.is-open .card-backdrop {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .inside-book {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #fff9fc;
+      border: 1px solid rgba(230, 170, 190, 0.55);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+      overflow: hidden;
+      perspective: 1200px;
+    }
+
+    .inside-sheet {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition: transform var(--page-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
+      z-index: 2;
+      will-change: transform;
+      transform: rotateY(0deg);
+      filter: drop-shadow(0 2px 6px rgba(55, 18, 37, 0.08));
+    }
+
+    .inside-sheet.flipped {
+      transform: rotateY(-179.5deg);
+      filter: drop-shadow(-10px 8px 14px rgba(55, 18, 37, 0.2));
+    }
+
+    .inside-sheet::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.4) 50%, transparent 65%);
+      opacity: 0;
+      transform: translateX(-130%);
+      z-index: 3;
+    }
+
+    .inside-sheet.turning::before {
+      animation: page-gloss var(--page-duration) ease;
+    }
+
+    .inside-sheet::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(41, 18, 31, 0.18), rgba(41, 18, 31, 0.02) 26%, transparent 52%);
+      opacity: 0.15;
+      transition: opacity var(--page-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .inside-sheet.flipped::after {
+      opacity: 0.42;
+    }
+
+    @keyframes page-gloss {
+      0% {
+        opacity: 0;
+        transform: translateX(-130%);
+      }
+      22% {
+        opacity: 0.5;
+      }
+      60% {
+        opacity: 0.2;
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(130%);
+      }
+    }
+
+    .inside-page {
+      position: absolute;
+      inset: 0;
+      padding: 24px 18px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 10px;
+      color: #472032;
+      background: linear-gradient(155deg, #fffefc 0%, #fff4f9 100%);
+    }
+
+    .inside-page.front {
+      transform: rotateY(0deg) translateZ(0.2px);
+    }
+
+    .inside-page h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    .inside-page p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #5b3242;
+    }
+
+    .page-hearts {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .inside-photo {
+      width: min(100%, 220px);
+      border-radius: 14px;
+      border: 2px solid rgba(230, 170, 190, 0.7);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      object-fit: cover;
+      aspect-ratio: 4 / 5;
+    }
+
+    .inside-page.back {
+      transform: rotateY(180deg) translateZ(0.2px);
+      background: linear-gradient(155deg, #fff8fc 0%, #ffeef6 100%);
+    }
+
+    .inside-flip-spread {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .inside-flip-pane {
+      position: relative;
+      min-height: 300px;
+      border-radius: 12px;
+      background: linear-gradient(165deg, #fff9fc 0%, #ffeef6 100%);
+      border: 1px solid rgba(230, 170, 190, 0.7);
+      box-shadow: 0 8px 14px rgba(0, 0, 0, 0.1);
+      padding: 36px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .inside-flip-tag {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #7e2145;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(208, 130, 160, 0.65);
+      border-radius: 999px;
+      padding: 3px 7px;
+      line-height: 1;
+    }
+
+    .inside-flip-pane h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+      color: #6c2441;
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    .inside-flip-pane p {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #5b3242;
+    }
+
+    .inside-under {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px 18px;
+      color: #5b3242;
+      background: linear-gradient(155deg, #fff8fc 0%, #ffeef6 100%);
+    }
+
+    .inside-under p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .inside-under-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: min(100%, 300px);
+      padding: 18px 16px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.56);
+      border: 1px solid rgba(233, 168, 193, 0.7);
+      box-shadow: 0 14px 26px rgba(85, 27, 53, 0.14);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inside-under-content::before,
+    .inside-under-content::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 129, 179, 0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .inside-under-content::before {
+      top: -52px;
+      left: -40px;
+    }
+
+    .inside-under-content::after {
+      right: -44px;
+      bottom: -58px;
+    }
+
+    .memory-photo-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      margin-top: 4px;
+    }
+
+    .memory-ring-text {
+      margin: 0;
+      font-size: 0.78rem;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: #b14c73;
+      font-weight: 700;
+    }
+
+    .heart-row {
+      margin: 2px 0 0;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: #d6407a;
+      line-height: 1;
+    }
+
+    .romantic-note {
+      margin: 0;
+      font-family: "Segoe Script", "Brush Script MT", cursive;
+      font-size: 1.65rem;
+      line-height: 1.05;
+      color: #7a2448;
+      text-align: center;
+    }
+
+    .romantic-subnote {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: #5b3242;
+      text-align: center;
+    }
+
+    .tap-hint {
+      position: absolute;
+      bottom: -42px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: rgba(255, 243, 248, 0.85);
+      background: rgba(0, 0, 0, 0.22);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .proposal-card.open + .tap-hint {
+      display: none;
+    }
+
+    .next-day-btn {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 20;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #c53f71, #9f2b55);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 10px 20px rgba(35, 6, 20, 0.35);
+    }
+
+    .next-day-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 480px) {
+      .card-stage {
+        width: min(92vw, 330px);
+        height: min(72vh, 470px);
+      }
+
+      .cover-script {
+        font-size: 1.75rem;
+      }
+
+      .next-day-btn {
+        right: 10px;
+        bottom: 10px;
+        font-size: 0.82rem;
+        padding: 8px 12px;
+      }
+    }
+  </style>
 </head>
-<body onload="checkAccess('2026-02-08','propose')">
-<div class="container">
-  <h1>Propose Day – Our Memories 📸</h1>
-  <p>Every memory with you is precious.</p>
-  <button onclick="location.href='chocolateday.html'">Next ➜</button>
+<body class="propose-page" onload="checkAccess('2026-02-08','propose')">
+<div class="card-stage">
+  <div class="card-backdrop" aria-hidden="true">
+    <div class="inside-book" id="insideBook">
+      <div class="inside-under">
+        <!-- <p class="page-number">💗💗💗💗💗</p> -->
+        <div class="inside-under-content">
+          <p class="memory-ring-text">Forever Around My Heart</p>
+          <div class="memory-photo-wrap">
+            <img class="inside-photo" src="assets/images/together.jpg" alt="Our memory photo">
+          </div>
+          <p class="heart-row" aria-hidden="true">&#10084;&#65039; &#10084;&#65039; &#10084;&#65039; &#10084;&#65039; &#10084;&#65039;</p>
+          <p class="romantic-note">My Forever Love</p>
+          <p class="romantic-subnote">I Love you inna saara meri pyaari si jaan muah💗🥰🫂.</br>
+          
+        </p>
+          <p class="heart-row" aria-hidden="true">&#10084;&#65039; &#10084;&#65039; &#10084;&#65039;</p>
+        </div>
+      </div>
+      <div class="inside-sheet" id="insideSheet">
+        <div class="inside-page front">
+          <!-- <p class="page-number">💗💗💗</p> -->
+          <h2>Happy Propose Day</h2>
+          <img class="inside-photo" src="assets/images/propose day/IMG20251223100037.jpg" alt="Propose day memory">
+          <p class="page-hearts" aria-hidden="true">&#10084;&#65039;</p>
+          <p>From the moment we met🤝, from stranger to the soulmate🥰</p>
+          <p>You are my smile, my peace, and my favorite person.Every morning starts by remembering you.💏🌹😚💗</p>
+        </div>
+        <div class="inside-page back">
+          <p class="page-number">Page 4</p>
+          <h2>Always You</h2>
+          <p class="page-hearts" aria-hidden="true">&#10084;&#65039; &#10084;&#65039; &#10084;&#65039;</p>
+          <p>In every life and every moment, I choose you again and again.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="proposal-card" id="proposalCard" role="button" tabindex="0" aria-label="Open propose day card">
+    <div class="card-cover">
+      <p class="page-number">💗</p>
+      <div class="cover-oval">
+        <!-- <img class="cover-center-photo" src="assets/images/propose day/IMG20251223100037.jpg" alt="Photo inside ring on card cover"> -->
+        <img class="cover-ring" src="assets/images/propose day/ring.png" alt="" aria-hidden="true">
+      </div>
+      <div class="cover-copy">
+        <div class="cover-icons" aria-hidden="true">
+          <span>&hearts;</span>
+          <span>&hearts;</span>
+          <span>&hearts;</span>
+          <span>&hearts;</span>
+        </div>
+        <p class="cover-title">Happy</p>
+        <p class="cover-script">Propose Day</p>
+           <p class="cover-script">to my love </p>
+              <p class="cover-script">My happiness</p>
+                 <p class="cover-script">My everything</p>
+                    <p class="cover-script">I Love YOu💗</p>
+      </div>
+    </div>
+    <div class="card-inside" aria-hidden="true">
+      <div class="card-inside-content">
+        <div class="left-page left-page-first">
+          <p class="left-page-tag">💗💗</p>
+          <h3>To The Most Precious Person</h3>
+          <p class="mini-hearts" aria-hidden="true">&#10084;&#65039; &#10084;&#65039;🌹🌹❤️‍🔥💍🫂💗</p>
+ <p>
+  Will you be mine till death separates us? 💍❤️<br>
+  I am not asking for today only, main aapko aapse hamesha ke liye maang raha hoon 🫶✨
+  <br>
+  Propose Day toh bas ek bahaana hai 💖, mujhe toh aapko hamesha ke liye apna banana hai 🥹🤍
+  <br>
+  I still remember the very first day — 21st Dec night 🌙✨ jo humne feel kiya 💞
+  <br>
+  I will keep loving you with that same feeling 💗, aur woh feeling har din aur zyada gehri hoti ja rahi hai 🌸💓
+  <br>
+  I love you meri pyari khushbu baby 🥰💗🫂💋
+</p>
+        </div>
+        <div class="left-page left-page-second">
+          <p class="left-page-tag">💗💗💗💗</p>
+          <h3>I want to grow older with you!</h3>
+          <p class="mini-hearts" aria-hidden="true">&#10084;&#65039; &#10084;&#65039; &#10084;&#65039;</p>
+          <p>Hamre mummy ki bahuriya banogi, mummy hi nahi sab ghar waale aapka intezaar kar rahe hai,
+          </br> dekho jyada nakhre mat karo or jaldi se aao mai hi nai sab wait kr rhe hai aapka.</br>
+          aapko ring bhej rhe hai paheno or jaldi se aao bas baat khatam.
+        </br>Ye Lo 💍💗🥰😚.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="tap-hint">Tap the card to open</p>
 </div>
+  <a class="next-day-btn" href="chocolateday.html" aria-label="Go to Chocolate Day page">Chocolate Day &#10140;</a>
+  <audio id="proposalMusic" preload="auto" loop>
+    <source src="assets/music/river-flows-in-you.mp3" type="audio/mpeg">
+  </audio>
 <script src="js/script.js"></script>
+<script>
+  (function () {
+    const stage = document.querySelector(".card-stage");
+    const card = document.getElementById("proposalCard");
+    const insideSheet = document.getElementById("insideSheet");
+    const hint = document.querySelector(".tap-hint");
+    const music = document.getElementById("proposalMusic");
+    if (!card || !stage || !insideSheet || !hint) return;
+
+    const CARD_ANIM_MS = 940;
+    const PAGE_ANIM_MS = 940;
+    let step = 0;
+    let musicStarted = false;
+    let isAnimating = false;
+
+    function syncStepState() {
+      stage.setAttribute("data-step", String(step));
+    }
+
+    function holdAnimation(ms) {
+      isAnimating = true;
+      window.setTimeout(function () {
+        isAnimating = false;
+      }, ms);
+    }
+
+    function playMusic() {
+      if (!music) return;
+      const playPromise = music.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(function () {
+          // Ignore autoplay rejections from strict browsers.
+        });
+      }
+      musicStarted = true;
+    }
+
+    function animatePageTurn() {
+      insideSheet.classList.remove("turning");
+      void insideSheet.offsetWidth;
+      insideSheet.classList.add("turning");
+      window.setTimeout(function () {
+        insideSheet.classList.remove("turning");
+      }, PAGE_ANIM_MS + 40);
+    }
+
+    function goRight() {
+      if (isAnimating) return;
+      if (step === 0) {
+        card.classList.add("open");
+        stage.classList.add("is-open");
+        playMusic();
+        hint.textContent = "Tap right to flip page";
+        step = 1;
+        syncStepState();
+        holdAnimation(CARD_ANIM_MS);
+        return;
+      }
+
+      if (step === 1) {
+        animatePageTurn();
+        insideSheet.classList.add("flipped");
+        hint.style.display = "";
+        hint.textContent = "Tap left to flip back";
+        step = 2;
+        syncStepState();
+        holdAnimation(PAGE_ANIM_MS);
+        return;
+      }
+    }
+
+    function goLeft() {
+      if (isAnimating) return;
+      if (step === 1) {
+        card.classList.remove("open");
+        stage.classList.remove("is-open");
+        if (music) {
+          music.pause();
+          music.currentTime = 0;
+        }
+        hint.style.display = "";
+        hint.textContent = "Tap the card to open";
+        step = 0;
+        syncStepState();
+        holdAnimation(CARD_ANIM_MS);
+        return;
+      }
+
+      if (step === 2) {
+        animatePageTurn();
+        insideSheet.classList.remove("flipped");
+        hint.textContent = "Tap left to close card";
+        step = 3;
+        syncStepState();
+        holdAnimation(PAGE_ANIM_MS);
+        return;
+      }
+
+      if (step === 3) {
+        card.classList.remove("open");
+        stage.classList.remove("is-open");
+        if (music) {
+          music.pause();
+          music.currentTime = 0;
+        }
+        hint.style.display = "";
+        hint.textContent = "Tap the card to open";
+        step = 0;
+        syncStepState();
+        holdAnimation(CARD_ANIM_MS);
+      }
+    }
+
+    syncStepState();
+
+    stage.addEventListener("pointerup", function (event) {
+      if (!musicStarted) {
+        playMusic();
+      }
+      const rect = stage.getBoundingClientRect();
+      const clickedLeft = event.clientX < rect.left + rect.width / 2;
+      if (clickedLeft) {
+        goLeft();
+        return;
+      }
+      goRight();
+    });
+    stage.addEventListener("keydown", function (event) {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goRight();
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goLeft();
+      }
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        goRight();
+      }
+    });
+    stage.setAttribute("tabindex", "0");
+  })();
+</script>
 </body>
 </html>
