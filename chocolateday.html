@@ -1,15 +1,642 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chocolate Day</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100svh;
+      padding: 22px 16px 110px;
+      color: #fff;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background-attachment: scroll;
+    }
+
+    body.theme-choco {
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .choco-content {
+      position: relative;
+      z-index: 3;
+      max-width: 1020px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .page-title {
+      color: #ffe7d3;
+      font-size: clamp(24px, 3.2vw, 36px);
+    }
+
+    .page-subtitle {
+      color: #f8d6c2;
+      margin-top: 6px;
+      margin-bottom: 22px;
+      font-size: 14px;
+    }
+
+    .choco-experience {
+      display: grid;
+      place-items: center;
+      gap: 18px;
+      min-height: min(72vh, 620px);
+    }
+
+    .choco-packet-wrap {
+      position: relative;
+      width: min(68vw, 260px);
+      aspect-ratio: 0.5;
+      perspective: 1400px;
+    }
+
+    .choco-packet {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 7%, transparent 14% 86%, rgba(255, 255, 255, 0.12) 93% 100%),
+        radial-gradient(120% 80% at 50% 18%, #6336a8 0%, #4c268e 44%, #3a186f 100%);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(214, 190, 255, 0.18);
+      color: #ffeede;
+      transition: transform 280ms ease;
+    }
+
+    .choco-packet:hover {
+      transform: translateY(-4px);
+    }
+
+    .choco-packet::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0 2%, transparent 6% 94%, rgba(255, 255, 255, 0.18) 98% 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 20%, transparent 80%, rgba(0, 0, 0, 0.25));
+      pointer-events: none;
+    }
+
+    .packet-half {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent 45%),
+        linear-gradient(160deg, #5f33a3, #3d1a73);
+      transition: transform 900ms ease, opacity 900ms ease;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .packet-half.left {
+      left: 0;
+      clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+      transform-origin: left center;
+    }
+
+    .packet-half.right {
+      right: 0;
+      clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+      transform-origin: right center;
+    }
+
+    .packet-text {
+      position: relative;
+      z-index: 7;
+      display: grid;
+      align-content: start;
+      justify-items: center;
+      height: 100%;
+      gap: 8px;
+      padding: 34px 18px 30px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .packet-tag {
+      background: linear-gradient(155deg, #f7d84f, #e9bf2f);
+      color: #321a63;
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 1.05;
+      letter-spacing: 0.3px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      transform: rotate(-8deg);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.24);
+      position: absolute;
+      left: 16px;
+      top: 22px;
+    }
+
+    .packet-script {
+      margin-top: 34px;
+      font-family: "Segoe Script", "Brush Script MT", cursive;
+      color: #d8c573;
+      font-size: clamp(26px, 5.2vw, 36px);
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+    }
+
+    .packet-milk {
+      font-size: 32px;
+      margin-top: -4px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+    }
+
+    .packet-brand {
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: clamp(52px, 9vw, 74px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 0.85;
+      color: #fff;
+      text-shadow: 0 3px 7px rgba(0, 0, 0, 0.45);
+    }
+
+    .packet-brand small {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .packet-flavor {
+      margin-top: auto;
+      font-size: clamp(18px, 3.8vw, 26px);
+      color: #f4d96b;
+      letter-spacing: 4px;
+      font-weight: 900;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .packet-note {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      font-size: 11px;
+      opacity: 0.9;
+      letter-spacing: 0.5px;
+      color: #efe3ff;
+    }
+
+    .packet-crimp-top,
+    .packet-crimp-bottom {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      z-index: 8;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.2) 0 6px,
+          rgba(255, 255, 255, 0.05) 6px 12px
+        );
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(29, 11, 53, 0.45);
+      pointer-events: none;
+    }
+
+    .packet-crimp-top {
+      top: 0;
+      clip-path: polygon(0 100%, 4% 22%, 8% 100%, 12% 22%, 16% 100%, 20% 22%, 24% 100%, 28% 22%, 32% 100%, 36% 22%, 40% 100%, 44% 22%, 48% 100%, 52% 22%, 56% 100%, 60% 22%, 64% 100%, 68% 22%, 72% 100%, 76% 22%, 80% 100%, 84% 22%, 88% 100%, 92% 22%, 96% 100%, 100% 22%, 100% 100%);
+    }
+
+    .packet-crimp-bottom {
+      bottom: 0;
+      clip-path: polygon(0 0, 4% 78%, 8% 0, 12% 78%, 16% 0, 20% 78%, 24% 0, 28% 78%, 32% 0, 36% 78%, 40% 0, 44% 78%, 48% 0, 52% 78%, 56% 0, 60% 78%, 64% 0, 68% 78%, 72% 0, 76% 78%, 80% 0, 84% 78%, 88% 0, 92% 78%, 96% 0, 100% 78%, 100% 0);
+    }
+
+    .tear-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, rgba(236, 223, 255, 0.85) 0%, rgba(182, 154, 227, 0.85) 100%);
+      border-radius: 4px;
+      z-index: 5;
+      box-shadow: 0 0 12px rgba(208, 188, 255, 0.55);
+    }
+
+    .choco-experience.opened .packet-half.left {
+      transform: translateX(-95%) rotateY(-40deg);
+      opacity: 0;
+    }
+
+    .choco-experience.opened .packet-half.right {
+      transform: translateX(95%) rotateY(40deg);
+      opacity: 0;
+    }
+
+    .choco-experience.opened .packet-text,
+    .choco-experience.opened .tear-line,
+    .choco-experience.opened .packet-crimp-top,
+    .choco-experience.opened .packet-crimp-bottom {
+      opacity: 0;
+      transition: opacity 320ms ease;
+    }
+
+    .choco-experience.opened .choco-packet {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .chocolate-bar {
+      width: min(92vw, 430px);
+      background: linear-gradient(160deg, #4f2819, #2f150d);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(24px) scale(0.95);
+      transition: transform 450ms ease, opacity 450ms ease;
+      pointer-events: none;
+    }
+
+    .choco-experience.opened .chocolate-bar {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      transition-delay: 380ms;
+    }
+
+    .choco-slab {
+      position: relative;
+      border-radius: 18px;
+      padding: 12px;
+      background: linear-gradient(155deg, #855035, #5d3423 60%, #4b291c);
+      box-shadow: inset 0 3px 8px rgba(255, 214, 186, 0.18), inset 0 -8px 16px rgba(48, 22, 13, 0.45);
+    }
+
+    .bar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .cube {
+      border: none;
+      border-radius: 18px;
+      min-height: 66px;
+      cursor: pointer;
+      color: #f7d7c1;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      background: linear-gradient(160deg, #a56a4a 0%, #8f5a3e 48%, #7a4a33 100%);
+      box-shadow: inset 0 2px 4px rgba(255, 225, 200, 0.28), inset 0 -6px 8px rgba(72, 36, 24, 0.35);
+      transition: transform 180ms ease, filter 180ms ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px 10px;
+    }
+
+    .cube:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+    }
+
+    .cube:active {
+      transform: scale(0.97);
+    }
+
+    .cube::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      right: 12px;
+      height: 16px;
+      border-radius: 16px;
+      background: linear-gradient(to bottom, rgba(255, 239, 220, 0.45), rgba(255, 239, 220, 0));
+      pointer-events: none;
+    }
+
+    .cube::after {
+      content: "S";
+      position: absolute;
+      right: 10px;
+      bottom: 6px;
+      color: rgba(86, 44, 29, 0.45);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .heart-cut {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 102px;
+      height: 90px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .heart-cut-shape,
+    .heart-cut-hole {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      transform: rotate(-45deg);
+    }
+
+    .heart-cut-shape {
+      left: 25px;
+      top: 17px;
+      background: #8f5a3e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.24), inset 0 2px 3px rgba(255, 230, 210, 0.2);
+    }
+
+    .heart-cut-shape::before,
+    .heart-cut-shape::after {
+      content: "";
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #8f5a3e;
+    }
+
+    .heart-cut-shape::before {
+      left: 0;
+      top: -26px;
+    }
+
+    .heart-cut-shape::after {
+      left: 26px;
+      top: 0;
+    }
+
+    .heart-cut-hole {
+      left: 31px;
+      top: 23px;
+      width: 40px;
+      height: 40px;
+      background: #5b3323;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+      z-index: 4;
+    }
+
+    .heart-cut-hole::before,
+    .heart-cut-hole::after {
+      content: "";
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #5b3323;
+    }
+
+    .heart-cut-hole::before {
+      left: 0;
+      top: -20px;
+    }
+
+    .heart-cut-hole::after {
+      left: 20px;
+      top: 0;
+    }
+
+    .cube-note {
+      color: #f7cfb6;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .card-popup {
+      position: fixed;
+      inset: 0;
+      z-index: 12;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(25, 8, 8, 0.68);
+    }
+
+    .card-popup.show {
+      display: flex;
+    }
+
+    .popup-card {
+      width: min(92vw, 460px);
+      min-height: 240px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff8f4 0%, #ffece3 100%);
+      color: #3b2920;
+      padding: 24px 20px 20px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+      border: 2px solid #ffd4dc;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .popup-card::before,
+    .popup-card::after {
+      position: absolute;
+      font-size: 22px;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .popup-card::before {
+      content: "\1F49E  \2728";
+      top: 10px;
+      left: 12px;
+    }
+
+    .popup-card::after {
+      content: "\1F36B  \1F498";
+      bottom: 10px;
+      right: 12px;
+    }
+
+    .popup-card h2 {
+      color: #5a1e1e;
+      margin-bottom: 6px;
+      font-size: 24px;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .emoji-row {
+      font-size: 18px;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .popup-card p {
+      font-size: 16px;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .next-btn {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 13;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: #5a1e1e;
+      color: #fff;
+      padding: 12px 30px;
+      font-size: 15px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .next-btn:hover {
+      background: #7a2a2a;
+    }
+
+    @media (max-width: 640px) {
+      .bar-grid {
+        grid-template-columns: repeat(2, minmax(90px, 1fr));
+      }
+
+      .cube {
+        min-height: 60px;
+      }
+    }
+  </style>
 </head>
 <body onload="checkAccess('2026-02-09','choco')">
-<div class="container">
-  <h1>Chocolate Day – My Favorite Person 💕</h1>
-  <p>You are my comfort and happiness.</p>
-  <button onclick="location.href='teddyday.html'">Next ➜</button>
-</div>
-<script src="js/script.js"></script>
+  <div class="choco-content">
+    <h1 class="page-title">Happy Chocolate Day My Sweet Cute Little Baby 🍫🍫🍫💗💗🥰🥰</h1>
+    <p class="page-subtitle">Tap the packet, unwrap the bar, then tap a chocolate cube.</p>
+
+    <section class="choco-experience" id="chocoExperience">
+      <div class="choco-packet-wrap">
+        <button class="choco-packet" id="chocoPacket" type="button" aria-label="Open chocolate packet">
+          <span class="packet-crimp-top"></span>
+          <span class="packet-crimp-bottom"></span>
+          <span class="packet-half left"></span>
+          <span class="packet-half right"></span>
+          <span class="tear-line"></span>
+          <span class="packet-text">
+            <span class="packet-tag">Family<br>Pack</span>
+            <span class="packet-script">Cadbury</span>
+            <span class="packet-milk">&#129371;</span>
+            <span class="packet-brand">Dairy<small>Milk</small></span>
+            <span class="packet-flavor">CHOCOLATE</span>
+            <h6> Only for my Sweet Cute Little Baby Muah 😚.</h6>
+            <span class="packet-note">Tap to tear open</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="chocolate-bar" id="chocolateBar">
+        <div class="choco-slab">
+          <div class="heart-cut" aria-hidden="true">
+            <span class="heart-cut-shape"></span>
+            <span class="heart-cut-hole"></span>
+          </div>
+          <div class="bar-grid">
+            <button class="cube" type="button" data-card="0" aria-label="Chocolate cube 1">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="1" aria-label="Chocolate cube 2">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="2" aria-label="Chocolate cube 3">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="3" aria-label="Chocolate cube 4">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="4" aria-label="Chocolate cube 5">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="5" aria-label="Chocolate cube 6">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="6" aria-label="Chocolate cube 7">Happy Chocolate Day</button>
+            <button class="cube" type="button" data-card="7" aria-label="Chocolate cube 8">Happy Chocolate Day</button>
+          </div>
+        </div>
+        <p class="cube-note">Each cube has one message card.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="card-popup" id="cardPopup" aria-hidden="true">
+    <div class="popup-card">
+      <div class="emoji-row" aria-hidden="true">&#128158; &#128150; &#127852; &#10024; &#128139;</div>
+      <p id="popupText"></p>
+    </div>
+  </div>
+
+  <div id="cardTemplates" hidden>
+    <div data-card="0">jab imagine karta hu mai tumhe pahene hue saadi safed silk,<br>man to krta hai ki khaa jau inch by inch kaat ke jaise <b>Dairy Milk</b>.</div>
+    <div data-card="1">aise hi khaunga tumhe jeevan bhar ye mera wada hai,<br>aapke hoth ki meethas <b>KitKat</b> se bhi jyada hai.</div>
+    <div data-card="2">aapke hote hue kyu khele hum mobile / pc games?<br>chalo na karte hai ek dusre me explore kuch hidden <b>gems</b>.</div>
+    <div data-card="3">when night is cold and romantic,<br>do you miss me?<br>i can&apos;t wait anymore... just <b>kiss me</b>.</div>
+    <div data-card="4">na jaane kab aayegi wo raat jab hoga baahon me baahen,<br>haathon me haath...<br>kar denge saari chat aur <b>dark fantasy</b> sach.</div>
+    <div data-card="5">No romantic photos, no nahaate-time VC,<br>Tabiyat kharab hai, so no hugs, no kissi.<br>Bas ek chhota sa video, one view wala,<br>Itna sa bhej do na warna udd jaayega <b>Fuse</b>.</div>
+    <div data-card="6">Hamare woh theatre-waale moment,<br>jannat se kam toh bilkul nahi the.<br>Lights off thi, lips soft thi,<br>wo ek ek touch <b>5 Star</b> tha.</div>
+    <div data-card="7">Doctor said no hot chocolate,<br>kya aap mujhe apni kurti me chhupa loge?<br>kyunki aap hi meri <b>natural hot chocolate</b> ho.</div>
+  </div>
+
+  <button class="next-btn" onclick="location.href='teddyday.html'">Next -></button>
+
+  <script>
+    const experience = document.getElementById("chocoExperience");
+    const packet = document.getElementById("chocoPacket");
+    const popup = document.getElementById("cardPopup");
+    const popupText = document.getElementById("popupText");
+    const cardTemplates = document.getElementById("cardTemplates");
+
+    packet.addEventListener("click", function () {
+      if (experience.classList.contains("opened")) {
+        return;
+      }
+      experience.classList.add("opened");
+    });
+
+    document.querySelectorAll(".cube").forEach(function (cube) {
+      cube.addEventListener("click", function () {
+        const index = Number(cube.dataset.card);
+        const cardTemplate = cardTemplates.querySelector('[data-card="' + index + '"]');
+        popupText.innerHTML = "\uD83D\uDC96 " + (cardTemplate ? cardTemplate.innerHTML : "Message not found.") + " \uD83D\uDC96";
+        popup.classList.add("show");
+        popup.setAttribute("aria-hidden", "false");
+      });
+    });
+
+    function closePopup() {
+      popup.classList.remove("show");
+      popup.setAttribute("aria-hidden", "true");
+    }
+
+    popup.addEventListener("click", function (event) {
+      if (event.target === popup) {
+        closePopup();
+      }
+    });
+  </script>
+  <script src="js/script.js"></script>
 </body>
 </html>
+
+
+
+

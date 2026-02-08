@@ -1,6 +1,8 @@
 //// ================= ACCESS CONTROL =================
 function checkAccess(unlockDate, theme = "night") {
   const root = document.documentElement;
+  if (root.dataset.accessChecked === "true") return;
+
   const today = new Date();
   today.setHours(0,0,0,0);
 
@@ -134,6 +136,8 @@ function createWaitingStars() {
 
 // ================= THEMES =================
 function applyTheme(theme) {
+  document.querySelectorAll(".float-layer").forEach((layer) => layer.remove());
+
   document.body.classList.remove(
     "theme-rose",
     "theme-propose",
