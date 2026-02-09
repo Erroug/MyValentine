@@ -1,15 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Teddy Day</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Teddy Day 🤍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<!-- ORIGINAL THEME (SAFE TO KEEP) -->
+<link rel="stylesheet" href="css/style.css">
+
+<!-- LOTTIE -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<style>
+/* ================= GLOBAL SAFETY ================= */
+html, body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  overflow-y:auto;
+}
+
+/* 🔥 FORCE BACKGROUND (prevents black screen) */
+body{
+  background: linear-gradient(135deg, #7a3b24, #f4c6a6);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ================= HERO LAYOUT ================= */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px 16px;
+  box-sizing:border-box;
+}
+
+/* ================= TEXT ================= */
+.hero h1{
+  color:#fff8f2;
+  font-family:'Great Vibes', cursive;
+  font-size:clamp(2.6rem, 6.5vw, 4.2rem);
+  font-weight:400;
+  letter-spacing:.4px;
+  line-height:1.08;
+  text-shadow:0 6px 18px rgba(74, 31, 16, .35);
+  margin-bottom:10px;
+}
+.hero p{
+  color:#fff3ea;
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(1.15rem, 2.3vw, 1.55rem);
+  font-weight:600;
+  letter-spacing:.35px;
+  text-shadow:0 4px 12px rgba(74, 31, 16, .25);
+  opacity:0.95;
+  margin-bottom:40px;
+}
+
+/* ================= TEDDY SECTION ================= */
+.teddy-section{
+  display:flex;
+  justify-content:center;
+  margin-bottom:40px;
+}
+
+/* ================= SCENE ================= */
+.scene{
+  position:relative;
+  width:min(620px, 95vw);
+  aspect-ratio:1/1;
+  height:auto;
+}
+
+/* ================= CENTER VIDEO ================= */
+.center-video{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:min(330px, 68vw);
+  aspect-ratio:4/5;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 20px 40px rgba(0,0,0,.3);
+  z-index:3;
+}
+.center-video video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.center-video img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* ================= CARDS ================= */
+.card{
+  position:absolute;
+  top:0;
+  left:0;
+  transform:translate(-50%, -50%);
+  width:64px;
+  height:64px;
+  background:#ffffff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+  transition:transform .25s;
+}
+.card:hover{
+  transform:translate(-50%, -50%) scale(1.15);
+}
+
+/* ================= BUTTON ================= */
+.hero .next-btn{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  z-index:20;
+  margin-top:0;
+  padding:12px 26px;
+  border-radius:24px;
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+  background:#ffffff;
+  color:#333;
+}
+
+/* ================= MODAL ================= */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+.modal.active{display:flex;}
+
+.modal-content{
+  background:#fff0f6;
+  border-radius:22px;
+  padding:24px;
+  width:320px;
+  text-align:center;
+}
+.modal-content p{
+  color:#d63384;
+  margin-top:12px;
+}
+</style>
 </head>
+
 <body onload="checkAccess('2026-02-10','teddy')">
-<div class="container">
-  <h1>Teddy Day – Your Care 🤍</h1>
-  <p>Your care makes my world beautiful.</p>
-  <button onclick="location.href='promiseday.html'">Next ➜</button>
+
+<div class="hero">
+
+  <h1>Happy Waala Teddy Day Meri Pyaari dulari Teddy mwah 💋🤍</h1>
+  <p>Tum pyaari si khushiyo se bhari ek dunia ho meri.    </p>
+
+  <div class="teddy-section">
+    <div class="scene" id="scene">
+
+      <!-- CENTER VIDEO (ADD YOUR VIDEO HERE) -->
+      <div class="center-video">
+        <video id="teddyVideo" autoplay loop muted playsinline preload="auto" poster="assets/images/joy.png">
+          <!-- 👉 PUT YOUR VIDEO PATH HERE -->
+          <source src="assets/videos/cute_teddy_bear.mp4" type="video/mp4">
+        </video>
+        <img id="videoFallback" src="assets/images/joy.png" alt="Teddy" hidden>
+      </div>
+
+      <!-- CARDS -->
+      <div class="card" onclick="openModal('text','Meri pyari si nanhi si jaan ko Happy waala teddy day muuuuuh jaan 💋💋😚😚🫂🫂💖')">💖</div>
+      <div class="card" onclick="openModal('lottie','assets/gifs/Cute bear dancing.json','Dancing teddy for my cutie with lots of kissies 💋💋')">💋</div>
+      <div class="card" onclick="openModal('text','Every hug from my cutie teddy is so warm and comforting. Now Your arms feels like home. 🫂')">🫂</div>
+      <div class="card" onclick="openModal('lottie','assets/gifs/Teddy Bear.json','A soft teddy hug for you meri jaan 🧸🫂')">😍</div>
+      <div class="card" onclick="openModal('text','Sending you virtual teddy but only till i am not there for you, very soon we will be together forever mwah💋💋😚😚🫂🫂💗💗🧸🧸 ❤️')">❤️</div>
+      <div class="card" onclick="openModal('lottie','assets/gifs/Valentines Day.json','My forever valentine teddy, only for you ❤️‍🔥')">🧸</div>
+      <div class="card" onclick="openModal('text','This is to remind you how much i love you come to me when you miss me i am just one text and call away and more importantly closest to your heart the place where i live. i Love you meri pyaari hone waali wifeyyy.💗💗💗💗❤️‍🔥❤️‍🔥❤️‍🔥❤️‍🔥🫂🫂🫂💏 💌')">💌</div>
+
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="location.href='promiseday.html'">Promise Day ➜</button>
+
 </div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="closeModal()">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
 <script src="js/script.js"></script>
+
+<script>
+/* ================= PERFECT CIRCLE ALIGNMENT ================= */
+const scene = document.getElementById("scene");
+const cards = document.querySelectorAll(".card");
+const centerVideo = document.querySelector(".center-video");
+
+function positionCards(){
+  const sceneRect = scene.getBoundingClientRect();
+  const videoRect = centerVideo.getBoundingClientRect();
+  const cx = sceneRect.width / 2;
+  const cy = sceneRect.height / 2;
+  const cardSize = cards[0] ? cards[0].offsetWidth : 64;
+  const safeGap = 34;
+  const ringPadding =4;
+
+  // Use video diagonal so cards stay evenly spaced around the full frame.
+  const videoHalfDiagonal = Math.hypot(videoRect.width / 2, videoRect.height / 2);
+  const desiredRadius = videoHalfDiagonal + cardSize / 2 + safeGap;
+  const maxRadius = Math.min(cx, cy) - cardSize / 2 - ringPadding;
+  const radius = Math.min(desiredRadius, maxRadius);
+
+  cards.forEach((card, i) => {
+    const angle = (i / cards.length) * Math.PI * 2 - Math.PI / 2;
+    card.style.left = cx + radius * Math.cos(angle) + "px";
+    card.style.top  = cy + radius * Math.sin(angle) + "px";
+  });
+}
+
+window.addEventListener("resize", positionCards);
+positionCards();
+
+/* ================= MODAL ================= */
+function openModal(type, content, caption = ""){
+  const modal = document.getElementById("modal");
+  const box = document.getElementById("modalContent");
+
+  if(type === "lottie"){
+    box.innerHTML = `
+      <lottie-player
+        src="${content}"
+        autoplay
+        loop
+        style="width:100%;height:260px">
+      </lottie-player>
+      <p>${caption || "Just for you 😘💖"}</p>
+    `;
+  } else {
+    box.innerHTML = `<p>${content}</p>`;
+  }
+  modal.classList.add("active");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("active");
+}
+</script>
+
 </body>
 </html>
