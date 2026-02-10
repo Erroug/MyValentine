@@ -332,6 +332,28 @@ body {
   animation: emojiBurst 1.4s ease-out forwards;
 }
 
+.next-btn {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 20;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #ffe7f3 100%);
+  color: #3a2332;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(30, 12, 36, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.next-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 28px rgba(30, 12, 36, 0.42);
+}
+
 @keyframes emojiBurst {
   0% {
     transform: translate(-50%, -50%) scale(0.6);
@@ -348,7 +370,7 @@ body {
 </style>
 </head>
 
-<body>
+<body onload="checkAccess('2026-02-11','promise')">
 <div class="promise-bg">
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
@@ -431,6 +453,9 @@ body {
 
 </div>
 
+<button class="next-btn" onclick="location.href='hugday.html'">Next ➜</button>
+
+<script src="js/script.js"></script>
 <script>
 const card = document.querySelector(".card");
 const canvas = document.getElementById("scratchCanvas");
@@ -549,6 +574,9 @@ function drawScratchGreeting(width, height) {
 
   ctx.font = `700 ${Math.max(24, width * 0.05)}px "Brush Script MT", "Segoe Script", cursive`;
   ctx.fillText("My Love, Meri Khushbu", width / 2, ribbonY + ribbonH + Math.max(113, height * 0.165));
+    ctx.fillText("Meri pyaari si jaan", width / 2, ribbonY + ribbonH + Math.max(150, height * 0.165));
+        ctx.fillText("Mwah mwah mwah ", width / 2, ribbonY + ribbonH + Math.max(180, height * 0.165));
+                ctx.fillText("💋💋💋💋💗🫂", width / 2, ribbonY + ribbonH + Math.max(210, height * 0.165));
   ctx.shadowBlur = 0;
 
   // Heart emojis (kept away from text to avoid overlap)
