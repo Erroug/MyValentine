@@ -919,6 +919,19 @@ button:hover {
   color: #fff2f7;
 }
 
+/* Keep themed gradients from tiling on tall viewports. */
+.theme-rose,
+.theme-propose,
+.theme-choco,
+.theme-teddy,
+.theme-promise,
+.theme-hug,
+.theme-kiss,
+.theme-valentine {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .valentine-layer span {
   width: 18px;
   height: 18px;
