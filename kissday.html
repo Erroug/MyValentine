@@ -1,15 +1,313 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Kiss Day</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* Background (Light Mode) */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Dark Mode */
+    .darkMode {
+      background: linear-gradient(to right, #2b0033, #000000);
+      transition: background 0.6s ease;
+    }
+
+    .blur {
+      filter: blur(16px) brightness(0.75);
+      transition: filter 1s ease;
+    }
+
+    /* Fixed Effects Layer */
+    #effectsLayer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 4;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      margin-top: 80px;
+      transform: none;
+    }
+
+    .nextButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9;
+    }
+
+    /* Floating Hearts */
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      animation: floatUp 6s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh); opacity: 1; }
+      100% { transform: translateY(-100px); opacity: 0; }
+    }
+
+    /* Click Kiss Marks */
+    .kissMark {
+      position: fixed;
+      font-size: 28px;
+      animation: fadeOut 3s forwards;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
+    }
+
+    /* Big Kiss */
+    #kissArea {
+      position: relative;
+      min-height: 100px;
+    }
+
+    .bigKiss {
+      font-size: 90px;
+      position: relative;
+      z-index: 5;
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    .hiddenMessage {
+      display: none;
+      margin-top: 20px;
+      font-size: 20px;
+    }
+
+    .photo {
+      margin-top: 20px;
+      display: none;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    .photo.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .photo img {
+      width: min(100%, 360px);
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .blurMessage {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 12;
+      width: min(86vw, 340px);
+      padding: 18px 18px 16px;
+      border-radius: 16px;
+      background: linear-gradient(160deg, rgba(43, 0, 51, 0.62), rgba(14, 0, 18, 0.6));
+      border: 1px solid rgba(255, 194, 228, 0.38);
+      backdrop-filter: blur(10px);
+      color: #fff5fb;
+      font-size: 20px;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease, visibility 0s linear 0.8s;
+      pointer-events: none;
+    }
+
+    .blurMessage.show {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    .blurMessage img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 10px;
+      border: 2px solid rgba(255, 235, 247, 0.75);
+      box-shadow: 0 0 18px rgba(255, 162, 210, 0.55);
+    }
+
+    .blurMessageText {
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    #mainContent > button:hover {
+      transform: none;
+    }
+  </style>
 </head>
-<body onload="checkAccess('2026-02-13','kiss')">
-<div class="container">
-  <h1>Kiss Day – My Heart 💗</h1>
-  <p>You live in my heart forever.</p>
-  <button onclick="location.href='valentineday.html'">Next ➜</button>
+
+<body onload="startCountdown(); checkAccess('2026-02-13','kiss')">
+
+<!-- Effects Background -->
+<div id="effectsLayer"></div>
+
+<div id="mainContent" class="container">
+
+  <h1>Kiss Day 💋</h1>
+  <div class="nickname">Meri Pyaari Khushbu baby 💖</div>
+
+<p>
+  Every kiss I send carries my deepest feelings and a piece of my heart…  
+  A promise that will last forever.  
+  A forever where it’s just you and me — always. 💞
+</p>
+
+
+  <button onclick="sendKiss()">Come Closer 😘</button>
+  <button onclick="toggleLights()">Dim The Lights 🌙</button>
+
+  <div id="kissArea"></div>
+
+  <div id="secret" class="hiddenMessage">
+    💌 These kisses are not just moments…  
+    They are promises, Holding deep feelings, love, care,  for every lifetime.  
+    I love you endlessly, ill be yours forever and ever hamesha hamesha.
+    i love you infinity.♾️♾️ 💗
+  </div>
+
+  <div class="photo" id="photo">
+    <img src="assets/images/kiss/IMG20250603090942.jpg" alt="Her Photo">
+  </div>
+
+  <div class="countdown" id="countdown"></div>
+
 </div>
+
+<div id="blurMessage" class="blurMessage">
+  <img src="assets/images/kiss/80db7ba4-5111-42cb-825e-626ad2ed9cb1.png" alt="Love Photo">
+  <div class="blurMessageText">Feel the first kiss of theater where we were holding each others arms legs were hugging and 
+    lips were creaving to kiss each others and slowly slowy we started to get close to each other,
+    eating each others like the last day, Melting into each Healing each others.
+    Feel the warm breath and melting tongue into each others,
+    feel the hug feel the lips . Muah 💋💋💋
+    My love 💕</div>
+</div>
+
+<button class="nextButton" onclick="location.href='valentineday.html'">
+  Seal Our Soul Forever 💕 ➜
+</button>
+
+<audio id="heartbeat">
+  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_88447cfa2c.mp3?filename=heartbeat-01-113627.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  let kissCount = 0;
+  let blurMessageTimer = null;
+
+  function toggleLights() {
+    document.body.classList.toggle("darkMode");
+  }
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+
+    document.getElementById("effectsLayer").appendChild(heart);
+
+    setTimeout(() => heart.remove(), 6000);
+  }
+
+  setInterval(createHeart, 700);
+
+  function sendKiss() {
+    kissCount++;
+
+    const kiss = document.createElement("div");
+    kiss.classList.add("bigKiss");
+    kiss.innerHTML = "💋";
+    document.getElementById("kissArea").appendChild(kiss);
+
+    document.getElementById("heartbeat").play();
+    setTimeout(() => kiss.remove(), 2000);
+
+    if (kissCount === 5) {
+      document.getElementById("secret").style.display = "block";
+      document.getElementById("photo").classList.add("show");
+      document.getElementById("mainContent").classList.add("blur");
+
+      const blurMessage = document.getElementById("blurMessage");
+      blurMessage.classList.add("show");
+
+      if (blurMessageTimer) {
+        clearTimeout(blurMessageTimer);
+      }
+
+      blurMessageTimer = setTimeout(() => {
+        blurMessage.classList.remove("show");
+        document.getElementById("mainContent").classList.remove("blur");
+      }, 10000);
+    }
+  }
+
+  /* Click anywhere kiss marks (NO layout shift) */
+  document.addEventListener("click", function(e) {
+    const kiss = document.createElement("div");
+    kiss.className = "kissMark";
+    kiss.innerHTML = "💋";
+    kiss.style.left = e.clientX + "px";
+    kiss.style.top = e.clientY + "px";
+
+    document.getElementById("effectsLayer").appendChild(kiss);
+
+    setTimeout(() => kiss.remove(), 3000);
+  });
+
+  function startCountdown() {
+    const firstKissDate = new Date("2025-12-21");
+    const today = new Date();
+    const diff = today - firstKissDate;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById("countdown").innerHTML =
+       " 💋💋💋💋💋💋💋";
+  }
+</script>
+
 <script src="js/script.js"></script>
+
 </body>
 </html>
