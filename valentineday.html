@@ -3,12 +3,222 @@
 <head>
   <title>Valentine Day</title>
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    .valentine-game {
+      position: relative;
+      width: 400px;
+      height: 350px;
+      margin: 30px auto;
+    }
+
+    .valentine-card {
+      width: 110px;
+      height: 150px;
+      background: white;
+      border-radius: 15px;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transition: all 0.8s ease;
+    }
+
+    .valentine-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff2e63;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-size: 18px;
+      z-index: 9999;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translate(-50%, -50px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .valentine-heart {
+      position: fixed;
+      color: #ff004f;
+      font-size: 25px;
+      animation: floatUp 3s linear forwards;
+      z-index: 999;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-300px); opacity: 0; }
+    }
+
+    /* WINTER SCENE */
+    #winterScene {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(#0f2027, #203a43, #2c5364);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+  </style>
 </head>
-<body onload="checkAccess('2026-02-14','valentine')">
+
+<body onload="checkAccess('2026-02-14','valentine'); initGame(); startCountdown();">
+
 <div class="container">
-  <h1>Valentine Day – Forever With You 💍</h1>
+  <h1>Valentine Day – Forever With You meri khushbu baby 💍</h1>
+  <h3>14 February 2026 ❤️</h3>
   <p>This is our forever beginning ❤️</p>
+  <p id="countdown"></p>
+
+  <h2>💘 Guess Where My Heart Is 💘</h2>
+  <div class="valentine-game" id="game"></div>
 </div>
+
+<!-- WINTER PAGE (Hidden Initially) -->
+<div id="winterScene">
+  <h1>Welcome To Our World My Love</h1>
+  <h2>You Found My Heart 💖</h2>
+</div>
+
+<script>
+  const game = document.getElementById("game");
+  let correctCard;
+  let gameLocked = true;
+
+  const positions = [
+    {top: 0, left: 0},
+    {top: 0, left: 140},
+    {top: 0, left: 280},
+    {top: 180, left: 0},
+    {top: 180, left: 140},
+    {top: 180, left: 280}
+  ];
+
+  function startCountdown() {
+    const targetDate = new Date("2026-02-14T00:00:00");
+    const countdownEl = document.getElementById("countdown");
+
+    setInterval(() => {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        countdownEl.innerHTML = "💖 It's Our Day My Love 💖";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff / (1000*60*60)) % 24);
+      const minutes = Math.floor((diff / (1000*60)) % 60);
+
+      countdownEl.innerHTML =
+        `⏳ ${days} Days ${hours} Hours ${minutes} Minutes left`;
+    }, 1000);
+  }
+
+  function initGame() {
+    correctCard = Math.floor(Math.random() * 6);
+
+    for (let i = 0; i < 6; i++) {
+      const card = document.createElement("div");
+      card.classList.add("valentine-card");
+      card.innerHTML = "💌";
+
+      card.style.top = "100px";
+      card.style.left = "150px";
+
+      card.onclick = () => checkCard(i);
+      game.appendChild(card);
+    }
+
+    shuffleAnimation();
+  }
+
+  function shuffleAnimation() {
+    gameLocked = true;
+    correctCard = Math.floor(Math.random() * 6);
+
+    const cards = document.querySelectorAll(".valentine-card");
+
+    cards.forEach(card => {
+      card.style.top = Math.random() * 250 + "px";
+      card.style.left = Math.random() * 250 + "px";
+      card.style.transform = `rotate(${Math.random()*360}deg)`;
+    });
+
+    setTimeout(() => {
+      cards.forEach((card, index) => {
+        card.style.top = positions[index].top + "px";
+        card.style.left = positions[index].left + "px";
+        card.style.transform = "rotate(0deg)";
+      });
+      gameLocked = false;
+    }, 1000);
+  }
+
+  function checkCard(index) {
+    if (gameLocked) return;
+
+    if (index === correctCard) {
+      winEffect();
+    } else {
+      wrongEffect();
+      setTimeout(shuffleAnimation, 800);
+    }
+  }
+
+  function wrongEffect() {
+    const messages = [
+      "Try again my love 💕",
+      "Not this one baby 😘",
+      "One more chance jaan ❤️"
+    ];
+    showPopup(messages[Math.floor(Math.random()*messages.length)]);
+  }
+
+  function showPopup(text) {
+    const popup = document.createElement("div");
+    popup.classList.add("valentine-popup");
+    popup.innerText = text;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 2000);
+  }
+
+  function winEffect() {
+    showPopup("You found my heart 💖");
+
+    confetti({ particleCount: 300, spread: 150 });
+
+    for (let i = 0; i < 60; i++) {
+      const heart = document.createElement("div");
+      heart.classList.add("valentine-heart");
+      heart.innerHTML = "💖";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.bottom = "0px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 3000);
+    }
+
+    // Open theme page after win animation
+    setTimeout(() => {
+      window.location.href = "theme.html";
+    }, 3000);
+  }
+</script>
+
 <script src="js/script.js"></script>
 </body>
 </html>

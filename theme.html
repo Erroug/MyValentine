@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Love Dice Game 🎲❤️</title>
+
+<style>
+
+/* ===== Romantic Background ===== */
+body{
+  margin:0;
+  font-family:'Georgia',serif;
+  background: radial-gradient(circle at center,#ff9fcb,#ff5fa8,#d63f8e);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  color:white;
+}
+
+/* Soft glow */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at 50% 60%, rgba(255,235,220,0.35), transparent);
+  pointer-events:none;
+}
+
+/* 🌹 Petals */
+.petal{
+  position:fixed;
+  top:-20px;
+  font-size:22px;
+  animation:fall linear infinite;
+  opacity:0.7;
+  z-index:0;
+}
+
+@keyframes fall{
+  0%{ transform:translateY(-10px) rotate(0deg); opacity:0; }
+  20%{ opacity:0.8; }
+  100%{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+}
+
+/* ===== GAME BOARD ===== */
+.game{
+  position:relative;
+  width:750px;
+  height:750px;
+  z-index:2;
+}
+
+/* Overlay */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.08);
+  opacity:0;
+  pointer-events:none;
+  transition:0.4s;
+  z-index:100;
+}
+
+.overlay.show{
+  opacity:1;
+  pointer-events:all;
+}
+
+/* Boxes */
+.box{
+  position:absolute;
+  width:140px;
+  height:140px;
+}
+
+.card{
+  width:100%;
+  height:100%;
+  transform-style:preserve-3d;
+  transition:0.8s ease;
+  position:relative;
+}
+
+/* BIG OPEN CARD */
+.card.flipped{
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:420px;
+  height:520px;
+  transform:translate(-50%,-50%) rotateY(180deg);
+  z-index:200;
+}
+
+/* Front */
+.front, .back{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:25px;
+  backface-visibility:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:15px;
+}
+
+.front{
+  background:linear-gradient(135deg,#ff2e88,#ff85c1);
+  font-size:45px;
+  box-shadow:0 10px 40px rgba(255,0,120,0.4);
+}
+
+/* Back Love Letter */
+.back{
+  background:linear-gradient(to bottom,#fffaf0,#ffe4ec);
+  color:#5c0033;
+  transform:rotateY(180deg);
+  font-size:18px;
+  flex-direction:column;
+  gap:15px;
+  padding:20px;
+  box-shadow:0 25px 80px rgba(0,0,0,0.5);
+}
+
+/* Card 2 long message layout */
+.back.long-note{
+  justify-content:flex-start;
+  overflow-y:auto;
+}
+.back.long-note img{
+  display:none;
+}
+.back.long-note .note-text{
+  margin:0;
+  font-size:12px;
+  line-height:1.35;
+}/* Image inside card */
+.back img{
+  width:100%;
+  height:auto;
+  max-height:260px;
+  object-fit:contain;
+  display:block;
+  background:#fff;
+  border-radius:15px;
+}
+
+/* Arrange in circle */
+.box1{ top:0; left:305px; }
+.box2{ top:180px; right:0; }
+.box3{ bottom:180px; right:0; }
+.box4{ bottom:0; left:305px; }
+.box5{ bottom:180px; left:0; }
+.box6{ top:180px; left:0; }
+
+/* Dice */
+.dice{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:160px;
+  height:160px;
+  background:white;
+  border-radius:30px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:70px;
+  cursor:pointer;
+  box-shadow:0 0 70px rgba(255,0,150,0.6);
+  transition:0.3s;
+}
+
+.dice:hover{
+  transform:translate(-50%,-50%) scale(1.05);
+}
+
+.dice.spin{
+  animation:spin 1.2s linear infinite;
+}
+
+@keyframes spin{
+  from{ transform:translate(-50%,-50%) rotateY(0deg); }
+  to{ transform:translate(-50%,-50%) rotateY(360deg); }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Petals Generator -->
+<script>
+for(let i=0;i<40;i++){
+  let p=document.createElement("div");
+  p.className="petal";
+  p.innerHTML="🌹";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(6+Math.random()*6)+"s";
+  p.style.animationDelay=Math.random()*5+"s";
+  document.body.appendChild(p);
+}
+</script>
+
+<div class="overlay" id="overlay" onclick="closeCard()"></div>
+
+<div class="game">
+
+  <!-- CARD 1 -->
+  <div class="box box1">
+    <div class="card">
+      <div class="front">🌹</div>
+      <div class="back">
+        <img src="assets/images/valen/rose.jpeg">
+        <div>The very first rose jo mai aapke liye leke aaya tha, My love mene usko acche se rakha hua hai aapka rose,
+          aapko ek din aana hai  and usko sambhal ke rakhna hai usko. 🌹</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="box box2">
+    <div class="card">
+      <div class="front">💌</div>
+      <div class="back long-note">
+        <img src="">
+         <div>💗💗💗💗💗</div>
+<div class="note-text">
+Meri jaan I love you dheeer saara 🫂💗♾️✨  </br>
+
+Mene socha nhi tha ki ek saadhe 5 futiya 😏💞 meri life ki sabse important hissa ban jayegi 🌍💖</br>  
+
+Meri pyari nakchadi 😌💋, Meri Jaan ❤️, pata hai aapki awaaj… aaha 🎶🥹 jo awaaj mai sun sakta hu ye likhte hue ✍️💭  
+Har ek word mai aapki awaaj me sun sakta hu 💌💫, I can see your face clearly right now 😍🌹  </br>
+
+Pata hai jab mai keheta hu ki you are my happiness na 🥰, I really mean it 💯💖  
+Aapki hasi dekh ke na mera mann accha ho jata hai 😄✨, tabiyat mast ho jati hai 💕🌸  </br>
+
+Meri jaan 🫶 Upar waale ne hume mila to diya 🙏💞 but long distance me rakh diya 🌍💔  </br>
+Na jaane kya test kar raha hai wo humpe 😌✨  
+But my love, bas thoda himmat rakhna 💪💖  
+Mai hu aapke saath hamesha 🤝♾️  
+Aapko kahi nahi jaane dene wala 😌❤️‍🔥  </br>
+
+Abhi to hume saath me bohot se karnaame karne hai 😎✨🌍  
+My darling 💕 jab aap morning me photos bhejte ho 📸🌞  
+Aur mai neend se uthke dekhta hu na 🥹  
+Aapka photo dekhte hi din ban jata hai ☀️💖</br>  
+
+Ab mai aapko paas me dekhna chahta hu hamesha hamesha 🤍  
+Aapko kiss karke morning shuru karna chahta hu 💋🌅  
+Aapse shaadi karna chahta hu 💍❤️ asap!  </br>
+
+I Love you meri khushbu 🌸💞  
+Vid ki khushbu 💘  
+Khushvid 💌♾️
+</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="box box3">
+    <div class="card">
+      <div class="front">🍫</div>
+      <div class="back">
+        <img src="assets/images/valen/chocolate.jpg">
+        <div>
+          Every thing we do together becomes so so special na,
+          every moment is so precious just because you are in it.
+          Menifesting to try all the foods in ahemadabad with you my love.</br>
+          Life is sweeter with you 🍫</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="box box4">
+    <div class="card">
+      <div class="front">🎁</div>
+      <div class="back">
+        <img src="assets/images/valen/memmories.jpeg">
+        <div>
+          Meri jaan all these memmories i have collected, all thees are very special to me
+          inko dekh ke saari yaade taaja ho jaati hai hamare wo moments kitne kitne kitne keemti hai,</br>
+          You are my best gift 🎁</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="box box5">
+    <div class="card">
+      <div class="front">❤️</div>
+      <div class="back">
+        <img src="assets/images/valen/heart.jpg">
+        <div>
+          ye jo 50 gm ka hai na sine me ye bas ab aapke hi naam leta hai all the time,
+          sote uthte jaagte always isko bas aap chaahea, aapki awaaj sunke hi sant hota hai,
+          aapke touch ko feel krna chahta hai ye bohot jyada.💗💗🫂🫂♾️💍🌹</br>
+          My heart beats only for you ❤️</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="box box6">
+    <div class="card">
+      <div class="front">✨</div>
+      <div class="back">
+        <img src="assets/images/valen/steps.jpg">
+        <div>
+          Little by little hum har rooj har din ek dusre ke aur kareeb pahuch rahe hai,
+          saadi ki date ke najdeek hamare ye chhote chhote kadam and chhote chhote efforts, hamare moment ko special bana rhe hai,
+          and ek din aayega jab hum paas honge ek dusre ke baaho me, saari ladaiyan jeetne ke baad my Love,
+          Our Little Steps bringin us closer to each others everyday.🫂🫂🫂🫂🫂</br>
+          You are my magical wish ✨</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DICE -->
+  <div class="dice" id="dice" onclick="rollDice()">🎲</div>
+
+</div>
+
+<script>
+
+let cards=document.querySelectorAll(".card");
+let remaining=[0,1,2,3,4,5];
+let rolling=false;
+
+function rollDice(){
+  if(rolling) return;
+
+  if(remaining.length===0){
+    alert("All love cards unlocked Relode to open again💖");
+    return;
+  }
+
+  rolling=true;
+  let dice=document.getElementById("dice");
+  dice.classList.add("spin");
+
+  setTimeout(()=>{
+    dice.classList.remove("spin");
+
+    let randomIndex=Math.floor(Math.random()*remaining.length);
+    let selected=remaining[randomIndex];
+
+    cards[selected].classList.add("flipped");
+    document.getElementById("overlay").classList.add("show");
+
+    remaining.splice(randomIndex,1);
+    rolling=false;
+  },1500);
+}
+
+function closeCard(){
+  cards.forEach(card=>card.classList.remove("flipped"));
+  document.getElementById("overlay").classList.remove("show");
+}
+
+</script>
+
+</body>
+</html>
+

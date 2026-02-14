@@ -538,7 +538,13 @@ button:hover {
   background: radial-gradient(1200px 800px at 20% 10%, #2a0f2f 0%, #14081b 40%, #0a0612 100%);
   background-color: #0a0612;
   color: #ffe6f2;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .waiting-bg {
@@ -589,9 +595,16 @@ button:hover {
 }
 
 .waiting-card {
+  position: relative;
+  z-index: 5;
+  width: 85%;
   background: rgba(255, 182, 213, 0.12);
   border: 1px solid rgba(255, 182, 213, 0.25);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  margin: auto;
+  margin-top: 0;
+  transform: none;
+  max-width: min(900px, 92vw);
 }
 
 .pulse-heart {
